@@ -3,6 +3,7 @@ import TypingEffect from './TypingEffect';
 import { parseCSV } from './parseCSV';
 import './App.css';
 import logo from './logo.png'; // Import your logo image
+import Fuse from 'fuse.js';
 
 function App() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -54,12 +55,18 @@ function App() {
 
   const handleSearch = () => {
     setIsSearchActive(true);
-    const results = products.filter((product) => {
-      const description = product.Description || '';
-      const matches = description.toLowerCase().includes(userInput.toLowerCase());
-      console.log(`Checking product: ${product.Title}, Matches: ${matches}`);
-      return matches;
-    });
+
+    const options = {
+      keys: ['Title', 'Description'], // Search in both Title and Description
+      threshold: 0.3, // Adjust the threshold for fuzzy matching
+    };
+
+    const fuse = new Fuse(products, options);
+    const results = fuse.search(userInput).map(result => result.item);
+
+    console.log('Search Query:', userInput);
+    console.log('Matched Results:', results);
+
     setSearchResults(results);
   };
 
