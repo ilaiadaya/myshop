@@ -1,12 +1,43 @@
 import React, { useState, useEffect } from 'react';
+import TypingEffect from './TypingEffect';
+import { parseCSV } from './parseCSV';
 import './App.css';
+import logo from './logo.png'; // Import your logo image
 
 function App() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [userInput, setUserInput] = useState('');
   const [savedInput, setSavedInput] = useState('');
   const [isSearchActive, setIsSearchActive] = useState(false);
-  const [loadedImages, setLoadedImages] = useState([]);
+  const [products, setProducts] = useState([]);
+  const [searchResults, setSearchResults] = useState([]);
+
+  useEffect(() => {
+    fetch('/corrected.csv')
+      .then((response) => {
+        console.log('Response Status:', response.status);
+        console.log('Response Headers:', response.headers);
+        const contentType = response.headers.get('content-type');
+        console.log('Content-Type:', contentType);
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        if (!contentType || !contentType.includes('text/csv')) {
+          throw new Error('Expected CSV file but received different content type');
+        }
+        return response.text();
+      })
+      .then((csvString) => {
+        console.log('CSV String:', csvString.slice(0, 100));
+        return parseCSV(csvString);
+      })
+      .then((data) => {
+        console.log('Parsed CSV Data:', data);
+        setProducts(data);
+      })
+      .catch((error) => console.error('Error loading CSV:', error));
+  }, []);
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
@@ -21,93 +52,45 @@ function App() {
     setIsSidebarOpen(false);
   };
 
-  const handleSearch = (event) => {
-    if (event.type === 'click') {
-      setIsSearchActive(true);
-    }
+  const handleSearch = () => {
+    setIsSearchActive(true);
+    const results = products.filter((product) => {
+      const description = product.Description || '';
+      const matches = description.toLowerCase().includes(userInput.toLowerCase());
+      console.log(`Checking product: ${product.Title}, Matches: ${matches}`);
+      return matches;
+    });
+    setSearchResults(results);
   };
 
-  const dummyImages = [
-    {
-      url: 'https://via.placeholder.com/200x200.png?text=Sample+Image+1',
-      title: 'Sample Title 1',
-      description: 'Sample description for image 1.',
-    },
-    {
-      url: 'https://via.placeholder.com/200x200.png?text=Sample+Image+2',
-      title: 'Sample Title 2',
-      description: 'Sample description for image 2.',
-    },
-    {
-      url: 'https://via.placeholder.com/200x200.png?text=Sample+Image+3',
-      title: 'Sample Title 3',
-      description: 'Sample description for image 3.',
-    },
-
-    {
-      url: 'https://via.placeholder.com/200x200.png?text=Sample+Image+1',
-      title: 'Sample Title 1',
-      description: 'Sample description for image 1.',
-    },
-    {
-      url: 'https://via.placeholder.com/200x200.png?text=Sample+Image+2',
-      title: 'Sample Title 2',
-      description: 'Sample description for image 2.',
-    },
-    {
-      url: 'https://via.placeholder.com/200x200.png?text=Sample+Image+3',
-      title: 'Sample Title 3',
-      description: 'Sample description for image 3.',
-    },
-
-    {
-      url: 'https://via.placeholder.com/200x200.png?text=Sample+Image+1',
-      title: 'Sample Title 1',
-      description: 'Sample description for image 1.',
-    },
-    {
-      url: 'https://via.placeholder.com/200x200.png?text=Sample+Image+2',
-      title: 'Sample Title 2',
-      description: 'Sample description for image 2.',
-    },
-    {
-      url: 'https://via.placeholder.com/200x200.png?text=Sample+Image+3',
-      title: 'Sample Title 3',
-      description: 'Sample description for image 3.',
-    },
-
-    {
-      url: 'https://via.placeholder.com/200x200.png?text=Sample+Image+1',
-      title: 'Sample Title 1',
-      description: 'Sample description for image 1.',
-    },
-    {
-      url: 'https://via.placeholder.com/200x200.png?text=Sample+Image+2',
-      title: 'Sample Title 2',
-      description: 'Sample description for image 2.',
-    },
-    {
-      url: 'https://via.placeholder.com/200x200.png?text=Sample+Image+3',
-      title: 'Sample Title 3',
-      description: 'Sample description for image 3.',
-    },
-  ];
-
-  useEffect(() => {
-    if (isSearchActive) {
-      setLoadedImages(dummyImages);
-    }
-  }, [isSearchActive]);
+  const handleLogoClick = () => {
+    setIsSearchActive(false);
+    setUserInput('');
+    setSearchResults([]);
+  };
 
   return (
     <div className="App">
       <header className="App-header">
+        <img
+          src={logo}
+          alt="Logo"
+          className="logo"
+          onClick={handleLogoClick}
+          style={{ cursor: 'pointer' }}
+        />
+        {!isSearchActive && (
+          <div className="type-animation">
+            <TypingEffect text="This is your shop nathan, what would you like to see?" />
+          </div>
+        )}
         <div className={`search-container ${isSearchActive ? 'active' : ''}`}>
           <input
             type="text"
             className="search-bar"
             placeholder="Search..."
-            onFocus={handleSearch}
+            value={userInput}
+            onChange={handleInputChange}
           />
           <button className="search-button" onClick={handleSearch}>
             Search
@@ -137,27 +120,42 @@ function App() {
           </div>
         )}
         {savedInput && <p>{savedInput}</p>}
-        {isSearchActive && loadedImages.length > 0 && (
+        {isSearchActive && searchResults.length > 0 && (
           <div className="search-results">
-            {loadedImages.map((image, index) => (
-              <div
-                className="grid-item"
-                key={index}
-                style={{
-                  display: 'inline-block',
-                  width: '30%',
-                  margin: '1.5%',
-                  boxSizing: 'border-box',
-                }}
-              >
-                <img src={image.url} alt={`Dummy ${index + 1}`} />
-                <div className="caption">
-                  <h4>{image.title}</h4>
-                  <p>{image.description}</p>
-                  <p className="image-url">{image.url}</p>
+            {searchResults.map((product, index) => {
+              let imageUrl = product['Image URL'];
+              if (typeof imageUrl === 'string' && imageUrl.startsWith('[')) {
+                try {
+                  imageUrl = JSON.parse(imageUrl.replace(/'/g, '"'))[0];
+                } catch (error) {
+                  console.error('Error parsing image URL:', error);
+                  imageUrl = '';
+                }
+              }
+              return (
+                <div
+                  className="grid-item"
+                  key={index}
+                  style={{
+                    display: 'inline-block',
+                    width: '30%',
+                    margin: '1.5%',
+                    boxSizing: 'border-box',
+                  }}
+                >
+                  <a href={product['Source URL']} target="_blank" rel="noopener noreferrer">
+                    <img
+                      src={imageUrl}
+                      alt={product.Title}
+                      style={{ width: '100%', height: 'auto' }}
+                    />
+                  </a>
+                  <div className="caption">
+                    <p>{product.Price}</p>
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         )}
       </header>
