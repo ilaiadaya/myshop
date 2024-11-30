@@ -9,7 +9,7 @@ const app = express();
 const port = 3000;
 
 const openai = new OpenAI({
-  apiKey: process.env.OPEN_API_KEY, // Corrected environment variable name
+  apiKey: process.env.OPEN_API_KEY,
 });
 const speechFile = path.resolve("./speech.mp3");
 
@@ -18,23 +18,22 @@ app.use(cors());
 
 app.post('/api/openai', async (req, res) => {
   console.log('Received a request at /api/openai');
-  console.log('Request Body:', req.body); // Log the request body
+  console.log('Request Body:', req.body);
   try {
     const mp3 = await openai.audio.speech.create({
       model: "tts-1",
       voice: "alloy",
-      input: "ladyboy killer 999999",
+      input: req.body.inputText || "default text",
     });
     const buffer = Buffer.from(await mp3.arrayBuffer());
     await fs.promises.writeFile(speechFile, buffer);
 
-    // Convert buffer to base64
     const audioBase64 = buffer.toString('base64');
 
     res.json({ 
       message: 'Speech file created successfully', 
       filePath: speechFile,
-      audio: audioBase64 // Send audio as base64
+      audio: audioBase64
     });
   } catch (error) {
     console.error('Error in /api/openai:', error);
@@ -46,7 +45,7 @@ app.listen(port, () => {
   console.log(`Proxy server running at http://localhost:${port}`);
 });
 
-import fetch from 'node-fetch'; // Use ES6 import syntax
+import fetch from 'node-fetch';
 
 async function testServerConnection() {
   try {
@@ -55,7 +54,7 @@ async function testServerConnection() {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ inputText: 'Test input' }), // Provide valid input
+      body: JSON.stringify({ inputText: 'Test input' }),
     });
 
     if (!response.ok) {
