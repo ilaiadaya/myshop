@@ -6,7 +6,7 @@ function App() {
   const [userInput, setUserInput] = useState('');
   const [savedInput, setSavedInput] = useState('');
   const [isSearchActive, setIsSearchActive] = useState(false);
-  const [loadedImage, setLoadedImage] = useState(null);
+  const [loadedImages, setLoadedImages] = useState([]);
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
@@ -27,15 +27,75 @@ function App() {
     }
   };
 
-  const dummyImage = {
-    url: 'https://via.placeholder.com/200x200.png?text=Sample+Image+1',
-    title: 'Sample Title 1',
-    description: 'Sample description for image 1.',
-  };
+  const dummyImages = [
+    {
+      url: 'https://via.placeholder.com/200x200.png?text=Sample+Image+1',
+      title: 'Sample Title 1',
+      description: 'Sample description for image 1.',
+    },
+    {
+      url: 'https://via.placeholder.com/200x200.png?text=Sample+Image+2',
+      title: 'Sample Title 2',
+      description: 'Sample description for image 2.',
+    },
+    {
+      url: 'https://via.placeholder.com/200x200.png?text=Sample+Image+3',
+      title: 'Sample Title 3',
+      description: 'Sample description for image 3.',
+    },
+
+    {
+      url: 'https://via.placeholder.com/200x200.png?text=Sample+Image+1',
+      title: 'Sample Title 1',
+      description: 'Sample description for image 1.',
+    },
+    {
+      url: 'https://via.placeholder.com/200x200.png?text=Sample+Image+2',
+      title: 'Sample Title 2',
+      description: 'Sample description for image 2.',
+    },
+    {
+      url: 'https://via.placeholder.com/200x200.png?text=Sample+Image+3',
+      title: 'Sample Title 3',
+      description: 'Sample description for image 3.',
+    },
+
+    {
+      url: 'https://via.placeholder.com/200x200.png?text=Sample+Image+1',
+      title: 'Sample Title 1',
+      description: 'Sample description for image 1.',
+    },
+    {
+      url: 'https://via.placeholder.com/200x200.png?text=Sample+Image+2',
+      title: 'Sample Title 2',
+      description: 'Sample description for image 2.',
+    },
+    {
+      url: 'https://via.placeholder.com/200x200.png?text=Sample+Image+3',
+      title: 'Sample Title 3',
+      description: 'Sample description for image 3.',
+    },
+
+    {
+      url: 'https://via.placeholder.com/200x200.png?text=Sample+Image+1',
+      title: 'Sample Title 1',
+      description: 'Sample description for image 1.',
+    },
+    {
+      url: 'https://via.placeholder.com/200x200.png?text=Sample+Image+2',
+      title: 'Sample Title 2',
+      description: 'Sample description for image 2.',
+    },
+    {
+      url: 'https://via.placeholder.com/200x200.png?text=Sample+Image+3',
+      title: 'Sample Title 3',
+      description: 'Sample description for image 3.',
+    },
+  ];
 
   useEffect(() => {
     if (isSearchActive) {
-      setLoadedImage(dummyImage);
+      setLoadedImages(dummyImages);
     }
   }, [isSearchActive]);
 
@@ -77,18 +137,27 @@ function App() {
           </div>
         )}
         {savedInput && <p>{savedInput}</p>}
-        {isSearchActive && loadedImage && (
+        {isSearchActive && loadedImages.length > 0 && (
           <div className="search-results">
-            <div className="carousel">
-              <div className="carousel-item">
-                <img src={loadedImage.url} alt="Dummy 1" />
+            {loadedImages.map((image, index) => (
+              <div
+                className="grid-item"
+                key={index}
+                style={{
+                  display: 'inline-block',
+                  width: '30%',
+                  margin: '1.5%',
+                  boxSizing: 'border-box',
+                }}
+              >
+                <img src={image.url} alt={`Dummy ${index + 1}`} />
                 <div className="caption">
-                  <h4>{loadedImage.title}</h4>
-                  <p>{loadedImage.description}</p>
-                  <p className="image-url">{loadedImage.url}</p> {/* Display the URL */}
+                  <h4>{image.title}</h4>
+                  <p>{image.description}</p>
+                  <p className="image-url">{image.url}</p>
                 </div>
               </div>
-            </div>
+            ))}
           </div>
         )}
       </header>
