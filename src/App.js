@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './App.css';
 
 function App() {
@@ -6,6 +6,7 @@ function App() {
   const [userInput, setUserInput] = useState('');
   const [savedInput, setSavedInput] = useState('');
   const [isSearchActive, setIsSearchActive] = useState(false);
+  const [loadedImage, setLoadedImage] = useState(null);
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
@@ -23,9 +24,20 @@ function App() {
   const handleSearch = (event) => {
     if (event.type === 'click') {
       setIsSearchActive(true);
-      // Add logic to perform the search and display results
     }
   };
+
+  const dummyImage = {
+    url: 'https://via.placeholder.com/200x200.png?text=Sample+Image+1',
+    title: 'Sample Title 1',
+    description: 'Sample description for image 1.',
+  };
+
+  useEffect(() => {
+    if (isSearchActive) {
+      setLoadedImage(dummyImage);
+    }
+  }, [isSearchActive]);
 
   return (
     <div className="App">
@@ -65,10 +77,18 @@ function App() {
           </div>
         )}
         {savedInput && <p>{savedInput}</p>}
-        {isSearchActive && (
+        {isSearchActive && loadedImage && (
           <div className="search-results">
-            {/* Render search results here */}
-            <p>Search results will appear here.</p>
+            <div className="carousel">
+              <div className="carousel-item">
+                <img src={loadedImage.url} alt="Dummy 1" />
+                <div className="caption">
+                  <h4>{loadedImage.title}</h4>
+                  <p>{loadedImage.description}</p>
+                  <p className="image-url">{loadedImage.url}</p> {/* Display the URL */}
+                </div>
+              </div>
+            </div>
           </div>
         )}
       </header>
