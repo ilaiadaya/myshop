@@ -96,25 +96,20 @@
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
-.carousel {
+.search-results {
   display: flex;
-  overflow-x: auto;
-  scroll-snap-type: x mandatory;
-  flex-direction: row;
-  width: 100%; /* Use full width for better nesting */
-  height: auto; /* Adjust height to fit content */
-  background-color: #f0f0f0;
-  padding: 20px; /* Add padding for better spacing */
-  box-sizing: border-box; /* Include padding in the element's total width */
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 60px;
 }
 
-.carousel-item {
+.grid-item {
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
-  margin: 0 10px; /* Add margin for spacing between items */
-  width: 300px; /* Adjust width for better nesting */
+  margin: 10px;
+  width: 300px;
   padding: 10px;
   box-sizing: border-box;
   background-color: #fff;
@@ -122,26 +117,24 @@
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
-.carousel-item img {
-  width: 100%; /* Make image responsive within the item */
-  height: auto; /* Maintain aspect ratio */
-  object-fit: cover;
-  margin-bottom: 10px;
+.grid-item img {
+  width: 100%;
+  height: auto;
   border: 2px solid #ccc;
   box-sizing: border-box;
 }
 
-.carousel-item .caption {
+.caption {
   margin-top: 5px;
 }
 
-.carousel-item .caption h4 {
+.caption h4 {
   margin: 0;
   font-size: 16px;
   color: #333;
 }
 
-.carousel-item .caption p {
+.caption p {
   margin: 0;
   font-size: 12px;
   color: #666;
