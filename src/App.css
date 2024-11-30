@@ -44,6 +44,7 @@ body, html {
   margin-left: auto;
   margin-right: auto;
 }
+
 .search-bar {
   padding: 10px;
   font-size: 16px;
@@ -163,4 +164,97 @@ body, html {
   width: 10%;
   max-width: 100px;
   height: auto;
+}
+
+.image-upload-container {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.file-input {
+  display: none;
+}
+
+.custom-file-button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100px;
+  height: 100px;
+  background-color: #f0f0f0;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.plus-icon {
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.add-image-text {
+  font-size: 14px;
+  margin-top: 5px;
+  color: black;
+}
+
+.uploaded-image {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 5px;
+}
+
+.image-container {
+  position: relative;
+}
+
+.image-caption {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  color: white;
+  text-align: center;
+  padding: 5px;
+  font-size: 12px;
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
+}
+
+.remove-image-button {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  background-color: red;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+
+.saved-input {
+  margin-top: 10px;
+  font-size: 14px;
+  color: #333;
+}
+
+.captions-container {
+  margin-top: 20px;
+}
+
+.image-caption-text {
+  font-size: 14px;
+  color: #333;
+  margin-top: 5px;
 }
