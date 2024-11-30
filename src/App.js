@@ -53,52 +53,6 @@ function App() {
     setIsSidebarOpen(false);
   };
 
-  const handleSearch = () => {
-    setIsSearchActive(true);
-
-    const options = {
-      keys: ['Title', 'Description'], // Search in both Title and Description
-      threshold: 0.3, // Adjust the threshold for fuzzy matching
-    };
-
-    const fuse = new Fuse(products, options);
-    const results = fuse.search(userInput).map(result => result.item);
-
-    console.log('Search Query:', userInput);
-    console.log('Matched Results:', results);
-
-    setSearchResults(results);
-  };
-
-  const handleLogoClick = () => {
-    setIsSearchActive(false);
-    setUserInput('');
-    setSearchResults([]);
-  };
-
-  const testServerConnection = async () => {
-    try {
-      const response = await fetch('http://localhost:3000/api/openai', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ test: true }),
-      });
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
-
-      const data = await response.json();
-      console.log('Server Response:', data);
-      alert('Server connection successful: ' + data.message);
-    } catch (error) {
-      console.error('Error connecting to server:', error);
-      alert('Error connecting to server: ' + error.message);
-    }
-  };
-
   return (
     <div className="App">
       <header className="App-header">
@@ -150,47 +104,6 @@ function App() {
           </div>
         )}
         {savedInput && <p>{savedInput}</p>}
-        {isSearchActive && searchResults.length > 0 && (
-          <div className="search-results">
-            {searchResults.map((product, index) => {
-              let imageUrl = product['Image URL'];
-              if (typeof imageUrl === 'string' && imageUrl.startsWith('[')) {
-                try {
-                  imageUrl = JSON.parse(imageUrl.replace(/'/g, '"'))[0];
-                } catch (error) {
-                  console.error('Error parsing image URL:', error);
-                  imageUrl = '';
-                }
-              }
-              return (
-                <div
-                  className="grid-item"
-                  key={index}
-                  style={{
-                    display: 'inline-block',
-                    width: '30%',
-                    margin: '1.5%',
-                    boxSizing: 'border-box',
-                  }}
-                >
-                  <a href={product['Source URL']} target="_blank" rel="noopener noreferrer">
-                    <img
-                      src={imageUrl}
-                      alt={product.Title}
-                      style={{ width: '100%', height: 'auto' }}
-                    />
-                  </a>
-                  <div className="caption">
-                    <p>{product.Price}</p>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        )}
-        <button onClick={testServerConnection} className="btn btn-primary">
-          Test Server Connection
-        </button>
       </header>
     </div>
   );
