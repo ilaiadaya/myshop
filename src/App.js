@@ -76,6 +76,29 @@ function App() {
     setSearchResults([]);
   };
 
+  const testServerConnection = async () => {
+    try {
+      const response = await fetch('http://localhost:3000/api/openai', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ test: true }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      console.log('Server Response:', data);
+      alert('Server connection successful: ' + data.message);
+    } catch (error) {
+      console.error('Error connecting to server:', error);
+      alert('Error connecting to server: ' + error.message);
+    }
+  };
+
   return (
     <div className="App">
       <header className="App-header">
@@ -165,6 +188,9 @@ function App() {
             })}
           </div>
         )}
+        <button onClick={testServerConnection} className="btn btn-primary">
+          Test Server Connection
+        </button>
       </header>
     </div>
   );
